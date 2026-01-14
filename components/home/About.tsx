@@ -1,0 +1,20 @@
+import {profile} from "@/lib/data";
+import {parseTextWithLinks} from "@/lib/text-utils";
+
+export function About() {
+    return (
+        <section
+            id="about"
+            className="rounded-3xl border border-brand-100 bg-white px-6 py-12 shadow-sm md:px-12"
+        >
+            <header className="mb-8">
+                <h2 className="text-3xl font-semibold text-brand-ink">About Me</h2>
+            </header>
+            <div className="space-y-6 text-base leading-7 text-brand-ink/80">
+                {profile.summary.map((paragraph) => (
+                    <p key={paragraph.slice(0, 20)}>{parseTextWithLinks(paragraph)}</p>
+                ))}
+            </div>
+        </section>
+    );
+}
