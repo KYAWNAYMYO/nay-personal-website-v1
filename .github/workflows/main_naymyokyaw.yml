@@ -1,32 +1,40 @@
-name: Build and deploy Next.js app to Azure Web App
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy Node.js app to Azure Web App - naymyokyaw
+
 on:
- push:
- branches:
- - main
- workflow_dispatch:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 env:
- APPLICATION_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
- WEBAPP_NAME: "naymyokyaw"
- NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
+    APPLICATION_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }} # set this to your application's name
+    WEBAPP_NAME: 'naymyokyaw' # set this to your application's name
+
 jobs:
- build:
- runs-on: ubuntu-latest
-steps:
- - uses: actions/checkout@v4
-- name: Set up Node.js version
- uses: actions/setup-node@v4
- with:
- node-version: "20.x"
-- name: npm install, build, and test
-run: |
- npm install
- npm run build
- mv ./build/static ./build/standalone/build
- mv ./public ./build/standalone
-- name: "Deploy to Azure Web App"
- id: deploy-to-webapp
- uses: azure/webapps-deploy@v3
- with:
- app-name: ${{ env.WEBAPP_NAME }}
- publish-profile: ${{ env.APPLICATION_PUBLISH_PROFILE }}
- package: ./build/standalone
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - name: npm install, build, and test
+        run: |
+          npm install
+          npm run build --if-present
+          mv ./build/static ./build/standalone/build
+          mv ./public ./build/standalone
+      
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.WEBAPP_NAME }}           
+          package: ./build/standalone
+          publish-profile: ${{ env.APPLICATION_PUBLISH_PROFILE }}
